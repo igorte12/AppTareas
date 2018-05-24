@@ -1,0 +1,81 @@
+crear usuario
+iniciar sesion
+
+
+
+cerrar sesion:  es un botón
+crear tarea   : nuevatarea.html
+modificar tarea: modificartarea.html
+eliminar tarea: es un botón
+ver tareas   :  listartarea.html
+
+
+
+
+
+Nombre:			Título:
+Usuario:		Descripción:
+Password:		Autor: id_usuario
+Email:			Fecha:
+			Ejecutor:id_usuario ejecutor
+			Estado:
+
+
+
+Tabla ejecutores
+
+id
+id_tarea
+id_autor
+
+
+Crear servidor:
+npm init
+
+	package name: (apptareas)
+	version: (1.0.0)
+	description: aplicacioón para gestionar tareas de usuarios
+	entry point: (index.js) server.js
+	test command:
+	git repository:
+	keywords:  Tareas, Usuarios, Gestionar
+	author: Iago Posada
+	license: (ISC)
+	About to write to C:\Users\academia.T-W7-OFF10-221\Desktop\Proyectos	\AppTareas\package.json:
+
+	{
+ 	 "name": "apptareas",
+ 	 "version": "1.0.0",
+ 	 "description": "aplicacioón para gestionar tareas de usuarios",
+ 	 "main": "server.js",
+ 	 "scripts": {
+ 	   "test": "echo \"Error: no test specified\" && exit 1"
+ 	 },
+ 	 "keywords": [
+	    "Tareas",
+ 	   "Usuarios",
+	    "Gestionar"
+ 	 ],
+  	"author": "Iago Posada",
+  	"license": "ISC"
+	}
+
+
+	Is this ok? (yes) yes
+
+
+
+
+Instalar express y body parser:
+	npm install express
+	npm install body-parser
+
+Instalar Mysql:
+	npm install mysql
+
+
+
+
+
+jsdoc server.js Generar documentación (Su contenido es todo lo comentado en el código con /**)
+
