@@ -1,7 +1,7 @@
 window.onload = function () {
     console.log("página lista")
 
-    document.getElementById("password2").addEventListener("blur", function () {
+    document.getElementById("password2").addEventListener("blur", function () { //ratón clica fuera de los campos cuando los dichos campos están cubiertos
         if (document.getElementById("password1").value != document.getElementById("password2").value) {
             document.getElementById("mensajes").setAttribute("style", "display:block");
             document.getElementById("mensajes").innerHTML = "Lac contraseñas deben ser iguales";
