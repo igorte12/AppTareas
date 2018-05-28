@@ -1,20 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="tareas2/css/tareas2.css">
+    <script src="tareas2/js/tareas2.js"></script>
     <title>Document</title>
 </head>
+
 <body>
     <header>
         <div>
-            
-            <a href="/cerrar"><input type="button"value="Cerrar"></a>
-            </div>
-    </header>
-    <h1>Tareas2</h1>
-    <button><id="btnPeticion">Peticion ajas></button>
-</body>
-</html>
+            <span id="user">[usuario]</span>
+            <ul id="useroptions" class="dropdown">
+                <li>
+                    <a id="datosuser" href="/editarUser">Datos de usuario</a>
+                </li>
+                <li>
+                    <a href="/cerrar">Cerrar</a>
+                </li>
 
+            </ul>
+        </div>
+    </header>
+    <hr>
+
+    <div id="container">
+        <h1>Tareas2</h1>
+        <div id="listatareas" class="mostrar">
+            <h3>Lista de tareas</h3>
+        </div>
+
+        <div id="datousuario" class="ocultar">
+            <h3>Datos de usuario</h3>
+            <form action="" method="post">
+                <label for="nombre">Nombre:</label>
+                <input type="text" required placeholder="Nombre" name="nombre" id="nombre">
+                <label for="tarea">Nombre del usuario:</label>
+                <input type="text" required placeholder="Nombre del usuario" name="usuario" id="usuario">
+                <label for="email">Correo electrónico:</label>
+                <input type="text" required placeholder="Correo electronico" name="email" id="email">
+                <label for="password">Contraseña:</label>
+                <input type="text" required placeholder="Contraseña" name="password1" id="password1">
+                <label for="password">Repite contraseña:</label>
+                <input type="text" required placeholder="Repite contraseña" name="password2" id="password2">
+                <div>
+                    <input type="submit" id="guardar" value="Guardar" disabled>
+                    <input type="submit" required id="cancelar" value="Cancelar">
+                    <div id="mensajes" style="display: none"></div>
+            </form>
+
+            <div id="ceartarea" class="ocultar">
+                <h3>Nueva tarea</h3>
+            </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

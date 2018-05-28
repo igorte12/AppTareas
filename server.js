@@ -7,19 +7,19 @@ var jsonParser = bodyParser.json();                                       // cre
 var urlencodedParser = bodyParser.urlencoded({ extended: false })         // create application/x-www-form-urlencoded parser
 app.use(jsonParser);
 app.use(urlencodedParser);
-var cookieSession =require('cookie-session')                             //Definir las cookies
+var cookieSession = require('cookie-session')                             //Definir las cookies
 app.use(cookieSession({                                                  //Definir campos cookies
-    name:'session',
-    keys:["SID"],
+    name: 'session',                                                      //nombre de la cookie
+    keys: ["SID"],                                                        //palabra que, junto con la propia contraseña introducida por el usuario, utilizará la cookie para encriptar las contraseñas (en ligar de SID se puede poner cualquier cosa)
     //Cookie Options
-    maxAge: 24 * 60*60*1000 //24 horas                                  //Definir duración cookies
+    maxAge: 24 * 60 * 60 * 1000 //24 horas                                  //Definir duración cookies
 }))
 
 var connection = mysql.createConnection({                              //acceso base de datos del servidor
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'apptareas',
+    host: 'localhost',                                                 //puerto
+    user: 'root',                                                     //usuario
+    password: '',                                                     //contraseña
+    database: 'apptareas',                                            //base dde datos
 })
 
 
@@ -61,12 +61,6 @@ app.get('/login', function (req, res) {
     fs.readFile("./www/login/login.html", "utf8", function (err, texto) {
         res.send(texto)
     });
-
-
-
-
-
-
 });
 
 
@@ -75,28 +69,42 @@ app.post('/login', function (req, res) {
     var password = req.body.password1
 
     connection.query("SELECT * FROM usuario where usuario=? AND password=?", [usuario, password], function (err, result) {   //Coteja los datos usuario y password que introducimos en los input con la base de datos llamada usuario. si coinciden devuelve los valores de su fila, si no coincide devuelve cadena vacía.
-        if (result.length == 0) {
-            
-            res.send("Usuario o contraseña incorrecta")
+        if (err) {
+            throw err
         } else {
-            req.session.user=usuario;
-            res.redirect('/tareas2');
-        }
 
+
+            if (result.length == 0) {
+                fs.readFile("www/login/login.html", "utf8", function (err, texto) {
+                    console.log("reemplazando");
+                    texto = texto.replace('class="ocultar">[error]', 'class="mostrar">Usuario o contraseña incorrectos')
+                    res.send(texto)
+
+                })
+
+
+
+            } else {
+                req.session.user = usuario;
+                req.session.iduser = result[0].id
+                res.redirect('/tareas2');
+            }
+        }
     })
 
 });
 
 app.get('/tareas2', function (req, res) {
-    if(req.session.user==undefined){                 //si no está logueado (cookies)
+    if (req.session.user == undefined) {                 //si no está logueado (cookies)
         res.redirect('/login');                      //lo redirige a la página de login
-    }else{
+    } else {
         fs.readFile("./www/tareas2/tareas2.html", "utf8", function (err, texto) {
-        res.send(texto)
+            texto = texto.replace("[usuario]", req.session.user);
+            res.send(texto)
 
-    })
+        })
     }
-    
+
 });
 
 
@@ -109,16 +117,36 @@ app.get("/peticion", function (req, res) {
 
 
 
-app.use(express.static('www/registro'));          //Devuelve como página estática (no cambia nunca) (en la dirección localhost:3000/"nombre del archivo".html) lo guardado en la carpeta www/registro (hay que ejecutar el archivo deseado en la url (/registro.html)))
+app.use(express.static('www'));          //Devuelve como página estática (no cambia nunca) (en la dirección localhost:3000/"nombre del archivo".html) lo guardado en la carpeta www (hay que ejecutar el archivo deseado en la url (/registro.html)))
+// Para acceder a archivos css y js hay que partir de la ruta de la página estática que hemos configurado (www rn este caso, por lo que el archivo registro estaría en: registro/ css/ registro.css).
 
 
 
-app.get("/cerrar", function(req,res){
-res.send("cerar");
+
+app.get("/cerrar", function (req, res) {
+    res.session = null;
+    res.redirect("/login");
+
 })
+
+
+app.get("/datouser", function (req, res) {
+    connection.query("select * from usuario where id=?", [req.session.iduser], function (err, result) {
+        if (err) {
+            throw err;
+        } else {
+            var datos = {
+                nombre: result[0].nombre,
+                usuario: result[0].usuario,
+                email: result[0].email,
+            }
+            res.send(JSON.stringify(datos));
+        }
+    })
+})
+
 
 var server = app.listen(3000, function () {    //Arranca servidor (puerto 3000)
     console.log('Servidor web iniciado');
 
 });
-

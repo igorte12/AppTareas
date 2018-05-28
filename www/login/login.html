@@ -6,28 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link rel="stylesheet" href="css/login.css">
-    <script src="js/login.js"></script>
+    <link rel="stylesheet" href="login/css/login.css">
+    <script src="login/js/login.js"></script>
 </head>
 
 <body>
     <h1>Login</h1>
     <form action="" method="post">
         <!-- dirección de recogida de datos (method=get muestra los datos en la barra de direcciones,method=post no muestra los datos en la barra de direcciones ) -->
-        
+
         <label for="tarea">Nombre del usuario:</label>
         <input type="text" required placeholder="Nombre del usuario" name="usuario" id="usuario">
-        
+
         <label for="password">Contraseña:</label>
         <input type="text" required placeholder="Contraseña" name="password1" id="password1">
-      
+
         <div>
-            <input type="submit" id="entrar" value="Entrar" >
+            <input type="submit" id="entrar" value="Entrar">
             <input type="reset" required id="cancelar" value="Cancelar">
 
         </div>
         <div id="mensajes" style="display: none"></div>
+    </form>
 
+    <div id= "error" class="ocultar">[error]</div>
 </body>
 
 </html>

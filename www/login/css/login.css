@@ -1,0 +1,6 @@
+.ocultar{       /*define clase ocultar */
+display:none
+}
+.mostrar{     /*define clase mostrar */
+display:block;
+}

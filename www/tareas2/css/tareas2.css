@@ -1,0 +1,24 @@
+.dropdown{
+    list-style:none;
+    display:none;
+}
+
+.dropdownver{
+    list-style:none;
+    display:block;
+}
+
+#user{
+     cursor: pointer;   /*mano de clicar en el cursor */
+}
+
+.ocultar{
+    list-style:none;
+    display:none;
+}
+
+.mostrar{
+    list-style:none;
+    display:block;
+}
+
