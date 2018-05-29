@@ -22,8 +22,6 @@ var connection = mysql.createConnection({                              //acceso 
     database: 'apptareas',                                            //base dde datos
 })
 
-
-
 /**
  *Puntos de entrada de mi servidor
 */
@@ -116,13 +114,6 @@ app.get("/peticion", function (req, res) {
 });
 
 
-
-app.use(express.static('www'));          //Devuelve como página estática (no cambia nunca) (en la dirección localhost:3000/"nombre del archivo".html) lo guardado en la carpeta www (hay que ejecutar el archivo deseado en la url (/registro.html)))
-// Para acceder a archivos css y js hay que partir de la ruta de la página estática que hemos configurado (www rn este caso, por lo que el archivo registro estaría en: registro/ css/ registro.css).
-
-
-
-
 app.get("/cerrar", function (req, res) {
     res.session = null;
     res.redirect("/login");
@@ -130,23 +121,68 @@ app.get("/cerrar", function (req, res) {
 })
 
 
-app.get("/datouser", function (req, res) {
+app.get("/datosuser", function (req, res) {
     connection.query("select * from usuario where id=?", [req.session.iduser], function (err, result) {
         if (err) {
             throw err;
         } else {
             var datos = {
+
                 nombre: result[0].nombre,
                 usuario: result[0].usuario,
                 email: result[0].email,
             }
-            res.send(JSON.stringify(datos));
+            setTimeout(function () {
+                res.send(JSON.stringify(datos));
+            }, 1000);
         }
     })
 })
 
 
+app.post("/datosuser", function (req, res) {
+    console.log(req.body);
+
+    connection.query("UPDATE usuario SET nombre = ?, password = ?, email = ? WHERE id = ?",
+        [req.body.nombre, req.body.password, req.body.email, req.session.iduser],
+        function (err, result) {
+            if (result.affectedRows > 0) {
+                res.send("ok");
+
+            } else {
+                res.send("noOk");
+            }
+        })
+
+})
+
+app.post("/nuevatarea", function (req, res) {
+    console.log(req.body);
+    connection.query("insert into tarea (titulo,descripcion,fecha,autor,ejecutor) values(?,?,?,?,?")
+    [req.body.titulo, req.body.descripcion, req.body.fecha, req.session.iduser, req.body.ejecutor],
+        function (err, result) {
+            if (err) {
+                console.log(err)
+                result = {
+                    estado: 0,
+                    idtarea: null
+                }
+            } else {
+                console.log(result);
+                result = {
+                    estado: 1,
+                    idtarea: result.insertId
+                }
+            }
+
+            res.send(JSON.stringify(result));
+
+        }
+})
+
+app.use(express.static('www'));          //Devuelve como página estática (no cambia nunca) (en la dirección localhost:3000/"nombre del archivo".html) lo guardado en la carpeta www (hay que ejecutar el archivo deseado en la url (/registro.html)))
+// Para acceder a archivos css y js hay que partir de la ruta de la página estática que hemos configurado (www rn este caso, por lo que el archivo registro estaría en: registro/ css/ registro.css).
+
 var server = app.listen(3000, function () {    //Arranca servidor (puerto 3000)
     console.log('Servidor web iniciado');
-
 });
