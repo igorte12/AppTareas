@@ -7,6 +7,10 @@ var jsonParser = bodyParser.json();                                       // cre
 var urlencodedParser = bodyParser.urlencoded({ extended: false })         // create application/x-www-form-urlencoded parser
 app.use(jsonParser);
 app.use(urlencodedParser);
+const SELECT_ALL_TAREAS = "SELECT tarea.id,tarea.titulo,tarea.descripcion,tarea.fecha,tarea.estado,usuario.nombre as autor,usr.nombre as ejecutor FROM tarea,usuario,usuario as usr where autor=usuario.id AND ejecutor=usr.id";
+const SELECT_ALL_TAREASID = "SELECT tarea.id,tarea.titulo,tarea.descripcion,tarea.fecha,tarea.estado,usuario.nombre as autor,usuario.id as autorid,usr.id as ejecutorid,usr.nombre as ejecutor FROM tarea,usuario,usuario as usr where autor=usuario.id AND ejecutor=usr.id";
+
+
 var cookieSession = require('cookie-session')                             //Definir las cookies
 app.use(cookieSession({                                                  //Definir campos cookies
     name: 'session',                                                      //nombre de la cookie
@@ -38,6 +42,7 @@ app.get('/registro', function (req, res) {
     });
 });
 
+
 app.post('/registro', function (req, res) {
 
     var nombre = req.body.nombre
@@ -48,7 +53,12 @@ app.post('/registro', function (req, res) {
         if (err) {
             throw err;
         } else {
-            res.send("Usuario introducido correctamente" + req.body.nombre);
+
+            req.session.user = usuario;
+            req.session.iduser = result.insertId;
+
+            res.redirect('/tareas2');
+
         }
 
     })
@@ -56,9 +66,13 @@ app.post('/registro', function (req, res) {
 });
 
 app.get('/login', function (req, res) {
-    fs.readFile("./www/login/login.html", "utf8", function (err, texto) {
-        res.send(texto)
-    });
+    if (req.session.user != undefined || req.session.iduser == false) {
+    } else {
+        fs.readFile("./www/login/login.html", "utf8", function (err, texto) {
+            res.send(texto)
+
+        }
+)};
 });
 
 
@@ -77,11 +91,7 @@ app.post('/login', function (req, res) {
                     console.log("reemplazando");
                     texto = texto.replace('class="ocultar">[error]', 'class="mostrar">Usuario o contraseña incorrectos')
                     res.send(texto)
-
                 })
-
-
-
             } else {
                 req.session.user = usuario;
                 req.session.iduser = result[0].id
@@ -93,16 +103,30 @@ app.post('/login', function (req, res) {
 });
 
 app.get('/tareas2', function (req, res) {
-    if (req.session.user == undefined) {                 //si no está logueado (cookies)
+    if (req.session.user == undefined || req.session.iduser == true) {                 //si no está logueado (cookies)
         res.redirect('/login');                      //lo redirige a la página de login
     } else {
         fs.readFile("./www/tareas2/tareas2.html", "utf8", function (err, texto) {
             texto = texto.replace("[usuario]", req.session.user);
-            res.send(texto)
+            connection.query("select * from usuario", function (err, result) {
+                let options = "";
+                if (err) {
+                    throw err;
+                } else {
+                    for (const usuario of result) {
+                        if (usuario.id) {
 
+                        } else {
+
+                        }
+                        options += `<option value='${usuario.id}'>${usuario.nombre}</options>`;
+                    }
+                }
+                texto = texto.replace("[ejecutores]", options);
+                res.send(texto)
+            })
         })
     }
-
 });
 
 
@@ -158,31 +182,97 @@ app.post("/datosuser", function (req, res) {
 
 app.post("/nuevatarea", function (req, res) {
     console.log(req.body);
-    connection.query("insert into tarea (titulo,descripcion,fecha,autor,ejecutor) values(?,?,?,?,?")
-    [req.body.titulo, req.body.descripcion, req.body.fecha, req.session.iduser, req.body.ejecutor],
+    connection.query("insert into tarea (titulo,descripcion,fecha,autor,ejecutor) values(?,?,?,?,?)",
+        [req.body.titulo, req.body.descripcion, req.body.fecha, req.session.iduser, req.body.ejecutor],
         function (err, result) {
-            if (err) {
-                console.log(err)
-                result = {
-                    estado: 0,
-                    idtarea: null
+            connection.query(SELECT_ALL_TAREAS, function (error, resultado) {
+                resultado = convertDateFormat(resultado);
+                if (error) {
+                    throw error;
+                } else {
+                    if (err) {
+                        console.log(err)
+                        result = {
+                            estado: 0,
+                            idtarea: null,
+                            tareas: resultado
+                        }
+                    } else {
+
+                        console.log(result);
+                        result = {
+                            estado: 1,
+                            idtarea: result.insertId,
+                            tareas: resultado
+                        }
+                    }
+                    res.send(JSON.stringify(result));
                 }
-            } else {
-                console.log(result);
-                result = {
-                    estado: 1,
-                    idtarea: result.insertId
-                }
+            })
+        });
+});
+
+app.get("/leertareas", function (req, res) {
+    // connection.query("select ..............., function (error, resultado) {  
+    connection.query(SELECT_ALL_TAREASID, function (error, resultado) {
+        resultado.forEach(element => {
+            if (req.session.iduser == element.autorid && req.session.iduser == element.ejecutorid) {
+                element.permiso = 0;
+            }
+            if (req.session.iduser == element.autorid && req.session.iduser != element.ejecutorid) {
+                element.permiso = 1;
+            }
+            if (req.session.iduser != element.autorid && req.session.iduser == element.ejecutorid) {
+                element.permiso = 2;
+            }
+            if (req.session.iduser != element.autorid && req.session.iduser != element.ejecutorid) {
+                element.permiso = 3;
             }
 
-            res.send(JSON.stringify(result));
+        })
+        console.log(resultado)
+        resultado = convertDateFormat(resultado);
+        res.send(JSON.stringify(resultado));  //res.send envía cadena de texto del servidor a la web (tareas2.js) donde esta lo recibe en res. response
+    });
+});
 
+
+app.get("/eliminartarea/:id?", function (req, res) {
+    console.log("Eliminando tarea " + req.quesry.id);
+    connection.query("DELETE FROM tarea WHEREid= ?", [req.query.id], function (err, result) {
+        connection.query(SELECT_ALL_TAREAS, function (error, resultado) {
+
+            if (err) {
+                throw err
+                resultado = {
+                    estado: 0,
+                    tareas: []
+                }
+            } else {
+                resultado = {
+                    estado: 1,
+                    tareas: []
+                }
+            }
         }
-})
-
+        )
+    }
+    )
+}
+)
 app.use(express.static('www'));          //Devuelve como página estática (no cambia nunca) (en la dirección localhost:3000/"nombre del archivo".html) lo guardado en la carpeta www (hay que ejecutar el archivo deseado en la url (/registro.html)))
 // Para acceder a archivos css y js hay que partir de la ruta de la página estática que hemos configurado (www rn este caso, por lo que el archivo registro estaría en: registro/ css/ registro.css).
 
 var server = app.listen(3000, function () {    //Arranca servidor (puerto 3000)
     console.log('Servidor web iniciado');
 });
+
+//fecha
+function convertDateFormat(array) {
+    for (let i = 0; i < array.length; i++) {
+        let fecha = new Date(array[i].fecha);             //definir fecha recorriendo  el array (Date identifica el dia, el mes y el año)
+        let formatFecha = [fecha.getDate(), fecha.getMonth(), fecha.getFullYear()].join('/');  //Separa las partes de la fecha(partes definidas por Date) con /
+        array[i].fecha = formatFecha;                                           //sobrescribe la fecha de un valor del array por esa misma fecha con el formato dd/mm/yyyy (formatFecha) 
+    }
+    return array;
+}

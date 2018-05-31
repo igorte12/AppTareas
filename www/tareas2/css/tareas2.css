@@ -1,118 +1,83 @@
-
 /* Estilos */
-
 .dropdown{
     list-style:none;
     display:none;
 }
-
 .dropdownver{
     list-style:none;
     display:block;
 }
-
 #user{
      cursor: pointer;   /*mano de clicar en el cursor */
 }
-
 .ocultar{
     list-style:none;
     display:none;
 }
-
 .mostrar{
     list-style:none;
     display:block;
 }
-
-
-
 h1 {
     background: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     margin-top:0px;
 }
-
-
 h2 {
+    font-size: 40px;
     background: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     margin-top:0px;
 }
-
 h3 {
     color: rgb(3, 3, 3);
-    font-size: 30px;
+    font-size: 40px;
     background: rgb(255, 255, 255);
     margin-bottom:0px;
+    text-align: center;
+    width: 220px;
+    height:45px;
+    margin-bottom: 25px
 }
-
-
-
 #datousuario{
-    border: 5px solid rgb(255, 255, 255);
-    text-align:center;
-    background: rgb(255, 255, 255);
-    margin-bottom: 0px;
-    width: 821px;
-    height:50px;
+    background: rgb(121, 116, 138);
+    font-size: 30px;
+    text-align: center;
+    width: 280px;
+    height:500px;
+    margin-left: 270px;
 }
-
 #guardar{
     background: blue;
     color: white;
 }
-
 hr1{
     border:1px solid rgb(116, 116, 116);
 }
 hr2{
     border:1px solid rgb(116, 116, 116);
-
-}
-
-form {background: rgb(121, 116, 138);
-    font-size: 30px;
-    text-align: center;
-    width: 280px;
-    height:400px;
-    margin-left: 270px;
 }
 
 #email{
-  
     width: 200px;
     height:20px;
 }
 #usuario{
     width: 200px;
     height:20px;
-   
 }
-
 #password1{
     width: 200px;
     height:20px;
-   
 }
 #password2{
     width: 200px;
     height:20px;
-   
 }
-
 #nombre{
     width: 200px;
     height:20px;
- 
 }
-
-
-
-
-
-
-
 /* <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -142,12 +107,45 @@ form {background: rgb(121, 116, 138);
 /* </style>
 </head>
 <body> */
-
-
-
 /* </body>
 </html> */
 #container{
     width: 70%;
     margin: 0 auto;
 }
+#addTarea{
+    background: rgb(134, 134, 134);
+    color: rgb(0, 0, 0);
+    width: 40px;
+    height:40px;
+    border-radius: 50%;
+    border:2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    font-size: 50px;
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    cursor:pointer;
+}
+#nuevatarea{
+    background: rgb(121, 116, 138);
+    font-size: 30px;
+    text-align: center;
+    width: 220px;
+    height:450px;
+    margin-left: 270px;
+}
+
+#ejecutor{
+    margin-left: 50px;
+    margin-top: 0px;
+    margin-right: 50px;
+}
+
+#buttons{
+    margin-top: 30px;
+}
+    
+
