@@ -124,7 +124,95 @@ window.onload = function () {
     this.document.getElementById("addTarea").onclick = function () {
         document.getElementById("nuevatarea").setAttribute("class", "mostrar")
     }
+
+    this.document.getElementById("btnActTarea").onclick = function (ev) {
+        ev.preventDefault();
+        var req = new XMLHttpRequest();
+        // Petición HTTP GET asíncrona si el tercer parámetro es "true" o no se especifica
+        req.open("POST", "/actualizartarea", true);
+        req.setRequestHeader("Content-Type", "application/json");
+        // Gestor del evento que indica el final de la petición (la respuesta se ha recibido)
+        req.addEventListener("load", function () {
+            // La petición ha tenido éxito
+            console.log(JSON.parse(req.response));
+            var respuesta = JSON.parse(req.response);
+            if (respuesta.estado == 1) {
+                alert("Tarea actualizada correctamente idtarea: " + respuesta.idtarea);
+                document.getElementById("formActualizarTarea").reset();
+            } else {
+                alert("Error al crear la tarea")
+            }
+            document.getElementById("actualizarTarea").setAttribute("class", "ocultar");
+            llenarTablaTareas(respuesta.tareas)
+        });
+        req.addEventListener("error", function () {
+            console.log(req.response);
+        });
+
+        var datos = {
+            id: document.getElementById("act_idtarea").value,
+            titulo: document.getElementById("act_titulo").value,
+            descripcion: document.getElementById("act_descripcion").value,
+            ejecutor: document.getElementById("act_ejecutor").value,
+            fecha: document.getElementById("act_fecha").value
+        }
+        console.log(datos)
+        req.send(JSON.stringify(datos));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // //mal
+    // this.document.getElementById("btnEliminar").onclick = function (ev) {
+    //     ev.preventDefault();
+    //     var req = new XMLHttpRequest();
+    //     // Petición HTTP GET asíncrona si el tercer parámetro es "true" o no se especifica
+    //     req.open("POST", "/eliminartarea", true);
+    //     req.setRequestHeader("Content-Type", "application/json");
+    //     // Gestor del evento que indica el final de la petición (la respuesta se ha recibido)
+    //     req.addEventListener("load", function () {
+    //         // La petición ha tenido éxito
+    //         console.log(JSON.parse(req.response));
+    //         var respuesta = JSON.parse(req.response);
+    //         if (respuesta.estado == 1) {
+    //             alert("Tarea eliminada correctamente idtarea: " + respuesta.idtarea);
+    //             document.getElementById("formActualizarTarea").reset();
+    //         } else {
+    //             alert("Error al eliminar la tarea")
+    //         }
+    //         document.getElementById("actualizarTarea").setAttribute("class", "ocultar");
+    //         llenarTablaTareas(respuesta.tareas)
+    //     });
+    //     req.addEventListener("error", function () {
+    //         console.log(req.response);
+    //     });
+
+    //     var datos = {
+    //         id: document.getElementById("act_idtarea").value,
+    //         titulo: document.getElementById("act_titulo").value,
+    //         descripcion: document.getElementById("act_descripcion").value,
+    //         ejecutor: document.getElementById("act_ejecutor").value,
+    //         fecha: document.getElementById("act_fecha").value
+    //     }
+    //     console.log(datos)
+    //     req.send(JSON.stringify(datos));
+    // }
 }
+
+
+
+
+
 function llenarTablaTareas(listatareas) {
     let contenidoTabla = "";
     for (const tarea of listatareas) {
@@ -160,23 +248,39 @@ function llenarTablaTareas(listatareas) {
     document.getElementById("tblTareas").innerHTML = contenidoTabla;
 }
 
+
 function peticionEditar(id) {
-    alert(id);
-}
+    var req = new XMLHttpRequest();
+    var url = "/gettarea?id=" + id;
+    req.open("GET", url, true);
+    req.addEventListener("load", function () {
+        var datos = JSON.parse(req.response);
+        document.getElementById("act_idtarea").value = datos.tarea.id;
+
+        document.getElementById("act_titulo").value = datos.tarea.titulo;
+        document.getElementById("act_descripcion").value = datos.tarea.descripcion;
+        document.getElementById("act_fecha").value = String(datos.tarea.fecha).substr(0, 10);
+        document.getElementById("actualizarTarea").setAttribute("class", "mostrar");
+        document.getElementById("act_ejecutor").value = datos.tarea.ejecutor;
+    });
+    req.send(null);
+};
+
 
 function peticionEliminar(id) {
     let req = new XMLHttpRequest();
     let url = "/eliminartarea?id=" + id;
     req.open("GET", url, true);
     req.addEventListener("load", function () {
+        
         var resultado = JSON.parse(req.response);
-        if (resultado.estado == 1) {
-            alert("Tarea eliminada");
-        }
-        llenarTablaTareas(resultado.tares);
+       
+        llenarTablaTareas(resultado);
     })
     req.send(null);
 }
+
+
 function actualizarTabla() {
 
     var req = new XMLHttpRequest();
@@ -188,3 +292,51 @@ function actualizarTabla() {
     });
     req.send(null);
 }
+
+
+
+
+
+
+
+
+function cambioestado(id) {
+    var req = new XMLHttpRequest();
+    var url = "/cambioesrsdi?id=" + id;
+    req.open("GET", url, true);
+    req.addEventListener("load", function () {
+        console.log(req.response)
+        var datos = JSON.parse(req.response);
+        llenarTablaTareas(datos.tareas)
+    });
+
+    req.addEventListener("error", function () {
+    });
+    req.send(null);
+}
+
+
+function handleFileSelect(evt) {   //pedir fotos
+
+
+    var files = evt.target.files; // FileList object
+
+    // files is a FileList of File objects. List some properties.
+    var output = [];
+    for (var i = 0, f; f = files[i]; i++) {
+        output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+            f.size, ' bytes, last modified: ',
+            f.lastModifiedDate.toLocaleDateString(), '</li>');
+    }
+    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+
+}
+
+
+
+
+
+
+
+
+ 

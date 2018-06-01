@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+    crossorigin="anonymous">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +15,7 @@
 <body>
     <header>
         <div>
-           
+
             <span id="user">[usuario]</span>
             <ul id="useroptions" class="dropdown">
                 <li>
@@ -61,6 +63,7 @@
                 <input type="text" required placeholder="Contraseña" name="password1" id="password1">
                 <label for="password">Repite contraseña:</label>
                 <input type="text" required placeholder="Repite contraseña" name="password2" id="password2">
+                <input type="file" name="Foto" id="foto" accept= "image/*">
                 <div>
                     <input type="submit" id="guardar" value="Guardar">
                     <input type="reset" id="cancelar" value="Cancelar">
@@ -80,7 +83,7 @@
                 <input type="date" required name="fecha" id="fecha" value="" placeholder="Fecha">
                 <label for="ejecutor">Ejecutor:</label>
                 <select name="ejecutor" id="ejecutor">
-                   [ejecutores]
+                    [ejecutores]
                 </select>
                 <div id="buttons">
                     <input type="submit" id="btnTarea" value="Guardar">
@@ -88,11 +91,30 @@
                 </div>
             </form>
         </div>
+        <div id="actualizarTarea" class="ocultar">
+            <h4>Actualizar tarea</h4>
+            <form action="" method="post" id="formActualizarTarea">
+                <input type="hidden" id="act_idtarea">
+                <label for="titulo">Título:</label>
+                <input type="text" required name="titulo" id="act_titulo" placeholder="Título">
+                <label for="email">Descripción:</label>
+                <input type="text" required name="descripcion" id="act_descripcion" placeholder="Descripción">
+                <label for="fecha">Fecha:</label>
+                <input type="date" required name="fecha" id="act_fecha" value="" placeholder="Fecha">
+                <label for="ejecutor">Ejecutor:</label>
+                <select name="ejecutor" id="act_ejecutor">
+                        [ejecutores]
+                </select>
+                <div id="buttons">
+                    <input type="submit" id="btnActTarea" value="Actualizar">
+                    <input type="reset" value="Cancel">
+                </div>
 
+        </div>
     </div>
 
     <div id=addTarea>+</div>
-    
+
 </body>
 
 </html>

@@ -9,8 +9,6 @@ app.use(jsonParser);
 app.use(urlencodedParser);
 const SELECT_ALL_TAREAS = "SELECT tarea.id,tarea.titulo,tarea.descripcion,tarea.fecha,tarea.estado,usuario.nombre as autor,usr.nombre as ejecutor FROM tarea,usuario,usuario as usr where autor=usuario.id AND ejecutor=usr.id";
 const SELECT_ALL_TAREASID = "SELECT tarea.id,tarea.titulo,tarea.descripcion,tarea.fecha,tarea.estado,usuario.nombre as autor,usuario.id as autorid,usr.id as ejecutorid,usr.nombre as ejecutor FROM tarea,usuario,usuario as usr where autor=usuario.id AND ejecutor=usr.id";
-
-
 var cookieSession = require('cookie-session')                             //Definir las cookies
 app.use(cookieSession({                                                  //Definir campos cookies
     name: 'session',                                                      //nombre de la cookie
@@ -65,18 +63,23 @@ app.post('/registro', function (req, res) {
 
 });
 
-app.get('/login', function (req, res) {
-    if (req.session.user != undefined || req.session.iduser == false) {
-    } else {
-        fs.readFile("./www/login/login.html", "utf8", function (err, texto) {
-            res.send(texto)
+app.get('/login', function (req, res) {             //faltan cosas
+    fs.readFile("./www/login/login.html", "utf8", function (err, texto) {
+        res.send(texto)
 
-        }
-)};
+    })
+    // if (req.session.user != undefined || req.session.iduser == false) {
+
+    // } else {
+    //     fs.readFile("./www/login/login.html", "utf8", function (err, texto) {
+    //         res.send(texto)
+
+    //     }
+    //     )
 });
 
-
 app.post('/login', function (req, res) {
+    console.log("Login post")
     var usuario = req.body.usuario
     var password = req.body.password1
 
@@ -93,6 +96,7 @@ app.post('/login', function (req, res) {
                     res.send(texto)
                 })
             } else {
+                console.log("login ok")
                 req.session.user = usuario;
                 req.session.iduser = result[0].id
                 res.redirect('/tareas2');
@@ -103,7 +107,7 @@ app.post('/login', function (req, res) {
 });
 
 app.get('/tareas2', function (req, res) {
-    if (req.session.user == undefined || req.session.iduser == true) {                 //si no está logueado (cookies)
+    if (req.session.user == undefined) {                 //si no está logueado (cookies)
         res.redirect('/login');                      //lo redirige a la página de login
     } else {
         fs.readFile("./www/tareas2/tareas2.html", "utf8", function (err, texto) {
@@ -122,7 +126,7 @@ app.get('/tareas2', function (req, res) {
                         options += `<option value='${usuario.id}'>${usuario.nombre}</options>`;
                     }
                 }
-                texto = texto.replace("[ejecutores]", options);
+                texto = texto.split("[ejecutores]").join(options);
                 res.send(texto)
             })
         })
@@ -238,34 +242,117 @@ app.get("/leertareas", function (req, res) {
 
 
 app.get("/eliminartarea/:id?", function (req, res) {
-    console.log("Eliminando tarea " + req.quesry.id);
-    connection.query("DELETE FROM tarea WHEREid= ?", [req.query.id], function (err, result) {
-        connection.query(SELECT_ALL_TAREAS, function (error, resultado) {
-
-            if (err) {
-                throw err
-                resultado = {
-                    estado: 0,
-                    tareas: []
+    console.log("Eliminando tarea " + req.query.id);
+    connection.query("DELETE FROM tarea WHERE id= ?", [req.query.id], function (err, result) {
+        connection.query(SELECT_ALL_TAREASID, function (error, resultado) {
+            resultado.forEach(element => {
+                if (req.session.iduser == element.autorid && req.session.iduser == element.ejecutorid) {
+                    element.permiso = 0;
                 }
-            } else {
-                resultado = {
-                    estado: 1,
-                    tareas: []
+                if (req.session.iduser == element.autorid && req.session.iduser != element.ejecutorid) {
+                    element.permiso = 1;
+                }
+                if (req.session.iduser != element.autorid && req.session.iduser == element.ejecutorid) {
+                    element.permiso = 2;
+                }
+                if (req.session.iduser != element.autorid && req.session.iduser != element.ejecutorid) {
+                    element.permiso = 3;
+                }
+
+            })
+
+            resultado = convertDateFormat(resultado);
+            res.send(JSON.stringify(resultado));  //res.send envía cadena de texto del servidor a la web (tareas2.js) donde esta lo recibe en res. response
+        });
+    })
+})
+
+app.post("/actualizartarea", function (req, res) {
+    var result;
+    connection.query("UPDATE tarea SET  titulo = ?, descripcion = ?, fecha = ?, ejecutor = ? WHERE tarea.id = ?",
+        [req.body.titulo, req.body.descripcion, req.body.fecha, req.body.ejecutor, req.body.id], function (err, resulta) {
+            connection.query(SELECT_ALL_TAREAS, function (error, resultado) {
+                resultado = convertDateFormat(resultado);
+                if (error) {
+                    throw error;
+                } else {
+                    if (err) {
+                        console.log(err)
+                        result = {
+                            estado: 0,
+                            idtarea: null,
+                            tareas: resultado
+                        }
+                    } else {
+
+                        console.log(result);
+                        result = {
+                            estado: 1,
+                            idtarea: null,
+                            tareas: resultado
+                        }
+                    }
+                    res.send(JSON.stringify(result));
+                }
+            })
+
+        })
+})
+
+app.get("/gettarea/:id?", function (req, res) {
+    let datos = {}
+    connection.query("SELECT tarea SET id = 1, titulo = hgh, descripcion = hjkg, autoR = ghjkg, fecha = CURRENT_TIMESTAMP, ejecutor = 8, estado = 2 WHERE tarea.id = 2")
+        usuarios: []
+
+
+
+    }
+)
+
+
+
+
+
+app.get("cambioestado/:id?", function (req, res) {
+
+    connection.query("Select tarea.id as idtarea,titulo,descripcion,autor as autorid,ejecutor as ejecutorid,fecha,estado,usuario.id as usuarioid,nombre FROM tarea RIGHT JOIN usuario on tarea.id=? and autor=usuario.id", [req.query.id], function (err, result) {
+        for (const iterator of result) {
+            if (iterator.idtarea) {
+                datos.tarea = {
+                    id: iterator.idtarea,
+                    titulo: iterator.titulo,
+                    descripcion: iterator.descripcion,
+                    autor: iterator.autorid,
+                    ejecutor: iterator.ejecutorid,
+                    fecha: iterator.fecha,
+                    estado: iterator.estado
                 }
             }
+
+            if (iterator.usuarioid) {
+                let user = {
+                    id: iterator.usuarioid,
+                    nombre: iterator.nombre
+                }
+                datos.usuarios.push(user);
+            }
         }
-        )
-    }
-    )
-}
-)
+        res.send(JSON.stringify(datos));
+    });
+
+});
+
 app.use(express.static('www'));          //Devuelve como página estática (no cambia nunca) (en la dirección localhost:3000/"nombre del archivo".html) lo guardado en la carpeta www (hay que ejecutar el archivo deseado en la url (/registro.html)))
 // Para acceder a archivos css y js hay que partir de la ruta de la página estática que hemos configurado (www rn este caso, por lo que el archivo registro estaría en: registro/ css/ registro.css).
 
 var server = app.listen(3000, function () {    //Arranca servidor (puerto 3000)
     console.log('Servidor web iniciado');
 });
+
+
+
+
+
 
 //fecha
 function convertDateFormat(array) {
