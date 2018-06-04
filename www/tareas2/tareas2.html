@@ -15,7 +15,7 @@
 <body>
     <header>
         <div>
-
+            <span class="fas fa-user"></span>
             <span id="user">[usuario]</span>
             <ul id="useroptions" class="dropdown">
                 <li>
@@ -24,10 +24,10 @@
                 <li>
                     <a href="/cerrar">Cerrar</a>
                 </li>
-
             </ul>
         </div>
     </header>
+    <hr>
     <h1>App tareas</h1>
     <hr id="hr1">
 
@@ -37,19 +37,23 @@
 
         <div id="listarTareas" class="mostrar">
             <h2>Lista de tareas</h2>
-            <table>
-                <thead>
-                    <th>Título</th>
-                    <th>Descripción</th>
-                    <th>Autor</th>
-                    <th>Ejecutor</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
-                    <th>Operaciones</th>
-                </thead>
-                <tbody id="tblTareas">
-                </tbody>
-            </table>
+            <div id="tabled">
+                <table>
+
+                    <thead>
+                        <th>Título</th>
+                        <th>Descripción</th>
+                        <th>Autor</th>
+                        <th>Ejecutor</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Operaciones</th>
+                    </thead>
+
+                    <tbody id="tblTareas">
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div id="datousuario" class="ocultar">
@@ -63,7 +67,7 @@
                 <input type="text" required placeholder="Contraseña" name="password1" id="password1">
                 <label for="password">Repite contraseña:</label>
                 <input type="text" required placeholder="Repite contraseña" name="password2" id="password2">
-                <input type="file" name="Foto" id="foto" accept= "image/*">
+                <input type="file" name="Foto" id="foto" accept="image/*">
                 <div>
                     <input type="submit" id="guardar" value="Guardar">
                     <input type="reset" id="cancelar" value="Cancelar">
@@ -71,47 +75,51 @@
                 </div>
             </form>
         </div>
-
-        <div id="nuevatarea" class="ocultar">
-            <h3>Nueva tarea</h3>
-            <form action="" method="post" id="formTarea">
-                <label for="titulo">Título:</label>
-                <input type="text" required name="titulo" id="titulo" placeholder="Título">
-                <label for="email">Descripción:</label>
-                <input type="text" required name="descripcion" id="descripcion" placeholder="Descripción">
-                <label for="fecha">Fecha:</label>
-                <input type="date" required name="fecha" id="fecha" value="" placeholder="Fecha">
-                <label for="ejecutor">Ejecutor:</label>
-                <select name="ejecutor" id="ejecutor">
-                    [ejecutores]
-                </select>
-                <div id="buttons">
-                    <input type="submit" id="btnTarea" value="Guardar">
-                    <input type="reset" value="Cancel">
-                </div>
-            </form>
-        </div>
-        <div id="actualizarTarea" class="ocultar">
-            <h4>Actualizar tarea</h4>
-            <form action="" method="post" id="formActualizarTarea">
-                <input type="hidden" id="act_idtarea">
-                <label for="titulo">Título:</label>
-                <input type="text" required name="titulo" id="act_titulo" placeholder="Título">
-                <label for="email">Descripción:</label>
-                <input type="text" required name="descripcion" id="act_descripcion" placeholder="Descripción">
-                <label for="fecha">Fecha:</label>
-                <input type="date" required name="fecha" id="act_fecha" value="" placeholder="Fecha">
-                <label for="ejecutor">Ejecutor:</label>
-                <select name="ejecutor" id="act_ejecutor">
-                        [ejecutores]
-                </select>
-                <div id="buttons">
-                    <input type="submit" id="btnActTarea" value="Actualizar">
-                    <input type="reset" value="Cancel">
-                </div>
-
+        <div>
+            <img src="" alt="" id="avatarT">
         </div>
     </div>
+
+    <div id="nuevatarea" class="ocultar">
+        <h3>Nueva tarea</h3>
+        <form action="" method="post" id="formTarea">
+            <label for="titulo">Título:</label>
+            <input type="text" required name="titulo" id="titulo" placeholder="Título">
+            <label for="email">Descripción:</label>
+            <input type="text" required name="descripcion" id="descripcion" placeholder="Descripción">
+            <label for="fecha">Fecha:</label>
+            <input type="date" required name="fecha" id="fecha" value="" placeholder="Fecha">
+            <label for="ejecutor">Ejecutor:</label>
+            <select name="ejecutor" id="ejecutor">
+                [ejecutores]
+            </select>
+            <div id="buttons">
+                <input type="submit" id="btnTarea" value="Guardar">
+                <input type="reset" value="Cancel">
+            </div>
+        </form>
+    </div>
+    <div id="actualizarTarea" class="ocultar">
+        <h4>Actualizar tarea</h4>
+        <form action="" method="post" id="formActualizarTarea">
+            <input type="hidden" id="act_idtarea">
+            <label for="titulo">Título:</label>
+            <input type="text" required name="titulo" id="act_titulo" placeholder="Título">
+            <label for="email">Descripción:</label>
+            <input type="text" required name="descripcion" id="act_descripcion" placeholder="Descripción">
+            <label for="fecha">Fecha:</label>
+            <input type="date" required name="fecha" id="act_fecha" value="" placeholder="Fecha">
+            <label for="ejecutor">Ejecutor:</label>
+            <select name="ejecutor" id="act_ejecutor">
+                [ejecutores]
+            </select>
+            <div id="buttons">
+                <input type="submit" id="btnActTarea" value="Actualizar">
+                <input type="reset" value="Cancel">
+            </div>
+
+    </div>
+
 
     <div id=addTarea>+</div>
 

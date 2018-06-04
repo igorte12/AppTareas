@@ -22,22 +22,22 @@ h1 {
     background: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     margin-top:0px;
+    text-align: center;
 }
 h2 {
     font-size: 40px;
     background: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     margin-top:0px;
+    text-align: center
+
 }
 h3 {
     color: rgb(3, 3, 3);
-    font-size: 40px;
-    background: rgb(255, 255, 255);
-    margin-bottom:0px;
-    text-align: center;
-    width: 220px;
-    height:45px;
-    margin-bottom: 25px
+    font-size: 30px;
+  padding: 20px;
+  margin-top: 30;
+text-align: center
 }
 #datousuario{
     background: rgb(121, 116, 138);
@@ -110,9 +110,19 @@ hr2{
 /* </body>
 </html> */
 #container{
-    width: 70%;
-    margin: 0 auto;
+    justify-content: center;
+    align-items:center;
+    display: flex;
+    
 }
+#tabled{
+    border:3px solid black; 
+    background: rgb(212, 210, 210);
+}
+
+
+
+
 #addTarea{
     background: rgb(134, 134, 134);
     color: rgb(0, 0, 0);
@@ -129,14 +139,8 @@ hr2{
     right: 30px;
     cursor:pointer;
 }
-#nuevatarea{
-    background: rgb(121, 116, 138);
-    font-size: 30px;
-    text-align: center;
-    width: 220px;
-    height:450px;
-    margin-left: 270px;
-}
+
+
 
 #ejecutor{
     margin-left: 50px;
@@ -148,3 +152,30 @@ hr2{
     margin-top: 30px;
 }
     
+#useroptions{
+    
+    padding-left: 0px;
+
+}
+
+#avatarT{
+height: 50px; width:50 px
+}
+#user{
+    font-size: 35px;   
+}
+
+#formTarea{
+    width: 500 px;
+    height: 200 px;
+}
+  
+
+     
+#nuevatarea{
+    background: rgb(121, 116, 138);
+    text-align: center;
+    font-size: 25px;
+    justify-content: center;
+    align-items:center;
+}

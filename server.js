@@ -113,21 +113,24 @@ app.get('/tareas2', function (req, res) {
         fs.readFile("./www/tareas2/tareas2.html", "utf8", function (err, texto) {
             texto = texto.replace("[usuario]", req.session.user);
             connection.query("select * from usuario", function (err, result) {
+                //Cargamos avatar usuario logeado.
                 let options = "";
                 if (err) {
                     throw err;
                 } else {
                     for (const usuario of result) {
-                        if (usuario.id) {
-
-                        } else {
-
-                        }
                         options += `<option value='${usuario.id}'>${usuario.nombre}</options>`;
+                        
+                        if (usuario.id == req.session.iduser) {
+                            if (usuario.avatar != "") {
+                                let imgAvatar = `<img src="${usuario.avatar}" alt="" id="avatarT">`;
+                                texto = texto.replace(`<span class="fas fa-user"></span>`, imgAvatar);
+                            }
+                        }
                     }
                 }
                 texto = texto.split("[ejecutores]").join(options);
-                res.send(texto)
+                res.send(texto);
             })
         })
     }
@@ -169,19 +172,22 @@ app.get("/datosuser", function (req, res) {
 
 
 app.post("/datosuser", function (req, res) {
-    console.log(req.body);
+    //console.log(req.body);
+    if (req.body.password == "") {
+        res.send("noOK");
+    } else {
+        connection.query("UPDATE usuario SET nombre = ?, password = ?, email = ?, avatar = ? WHERE id = ?",
+            [req.body.nombre, req.body.password, req.body.email, req.body.avatar, req.session.iduser],
+            function (err, result) {
+                if (result.affectedRows > 0) {
+                    //console.log(result)
+                    res.send("ok");
 
-    connection.query("UPDATE usuario SET nombre = ?, password = ?, email = ? WHERE id = ?",
-        [req.body.nombre, req.body.password, req.body.email, req.session.iduser],
-        function (err, result) {
-            if (result.affectedRows > 0) {
-                res.send("ok");
-
-            } else {
-                res.send("noOk");
-            }
-        })
-
+                } else {
+                    res.send("noOk");
+                }
+            })
+    }
 })
 
 app.post("/nuevatarea", function (req, res) {
@@ -301,17 +307,14 @@ app.post("/actualizartarea", function (req, res) {
 
 app.get("/gettarea/:id?", function (req, res) {
     let datos = {}
-    connection.query("SELECT tarea SET id = 1, titulo = hgh, descripcion = hjkg, autoR = ghjkg, fecha = CURRENT_TIMESTAMP, ejecutor = 8, estado = 2 WHERE tarea.id = 2")
-        usuarios: []
+    connection.query("select * from tarea where id=?", [req.query.id], function (err, result) {
+        console.log(result[0].titulo);
 
+        datos.tarea = result[0];
+        res.send(JSON.stringify(datos));
+    })
 
-
-    }
-)
-
-
-
-
+})
 
 app.get("cambioestado/:id?", function (req, res) {
 
@@ -348,10 +351,6 @@ app.use(express.static('www'));          //Devuelve como página estática (no c
 var server = app.listen(3000, function () {    //Arranca servidor (puerto 3000)
     console.log('Servidor web iniciado');
 });
-
-
-
-
 
 
 //fecha

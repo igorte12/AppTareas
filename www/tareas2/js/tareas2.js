@@ -82,7 +82,8 @@ window.onload = function () {
         var datos = {
             nombre: document.getElementById("nombre").value,
             email: document.getElementById("email").value,
-            password: document.getElementById("password1").value
+            password: document.getElementById("password1").value,
+            avatar:document.getElementById("avatarT").src,
         }
         // Envío de la petición
         console.log(datos);
@@ -123,6 +124,7 @@ window.onload = function () {
     }
     this.document.getElementById("addTarea").onclick = function () {
         document.getElementById("nuevatarea").setAttribute("class", "mostrar")
+        document.getElementById("titulo").focus
     }
 
     this.document.getElementById("btnActTarea").onclick = function (ev) {
@@ -161,16 +163,7 @@ window.onload = function () {
     }
 
 
-
-
-
-
-
-
-
-
-
-
+    document.getElementById('foto').addEventListener('change', archivo, false);
 
     // //mal
     // this.document.getElementById("btnEliminar").onclick = function (ev) {
@@ -208,9 +201,6 @@ window.onload = function () {
     //     req.send(JSON.stringify(datos));
     // }
 }
-
-
-
 
 
 function llenarTablaTareas(listatareas) {
@@ -255,8 +245,8 @@ function peticionEditar(id) {
     req.open("GET", url, true);
     req.addEventListener("load", function () {
         var datos = JSON.parse(req.response);
+        console.log(datos);
         document.getElementById("act_idtarea").value = datos.tarea.id;
-
         document.getElementById("act_titulo").value = datos.tarea.titulo;
         document.getElementById("act_descripcion").value = datos.tarea.descripcion;
         document.getElementById("act_fecha").value = String(datos.tarea.fecha).substr(0, 10);
@@ -266,15 +256,25 @@ function peticionEditar(id) {
     req.send(null);
 };
 
+function archivo(evt) {
+    var file = evt.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function (f) {
+        console.log(f);
+        document.getElementById("avatarT").src = f.target.result;
+    }
+    reader.readAsDataURL(file);
+}
+
 
 function peticionEliminar(id) {
     let req = new XMLHttpRequest();
     let url = "/eliminartarea?id=" + id;
     req.open("GET", url, true);
     req.addEventListener("load", function () {
-        
+
         var resultado = JSON.parse(req.response);
-       
+
         llenarTablaTareas(resultado);
     })
     req.send(null);
@@ -292,13 +292,6 @@ function actualizarTabla() {
     });
     req.send(null);
 }
-
-
-
-
-
-
-
 
 function cambioestado(id) {
     var req = new XMLHttpRequest();
@@ -339,4 +332,4 @@ function handleFileSelect(evt) {   //pedir fotos
 
 
 
- 
+
